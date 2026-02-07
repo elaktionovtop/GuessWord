@@ -60,41 +60,53 @@ Random rnd = new Random();
 
 string[] words = { "стол", "книга", "окно", "лампа" };
 
-string secretWord = ChooseWord(words);
-// временно, для контроля разработки
-Console.WriteLine($"[DEBUG] Загаданное слово: {secretWord}");
-
-string maskedWord = CreateMask(secretWord);
-Console.WriteLine(maskedWord);
-
-bool gameOver = false;
-int attemptCounter = 0;
-int errorCounter = 0;
-
-while(!gameOver)
+bool playAgain;
+do
 {
-    Console.Write("Введи букву: ");
-    char letter = Console.ReadLine()[0];
+    PlayGame();
+    Console.Write("Сыграть ещё раз? (д/н): ");
+    playAgain = Console.ReadLine().ToLower() == "д";
+}
+while(playAgain);
+ExitApp();
 
-    if (!UpdateMask(secretWord, ref maskedWord, letter))
-    {
-        Console.WriteLine($"Неправильно! Ошибок: {++errorCounter}");
-    }
+void PlayGame()
+{
+    string secretWord = ChooseWord(words);
+    // временно, для контроля разработки
+    Console.WriteLine($"[DEBUG] Загаданное слово: {secretWord}");
+
+    string maskedWord = CreateMask(secretWord);
     Console.WriteLine(maskedWord);
 
-    if(maskedWord == secretWord)
-    {
-        Console.WriteLine("Слово угадано!");
-        gameOver = true;
-    }
+    bool gameOver = false;
+    int attemptCounter = 0;
+    int errorCounter = 0;
 
-    if(++attemptCounter == 2 * secretWord.Length)
+    while(!gameOver)
     {
-        Console.WriteLine("Больше попыток нет!");
-        gameOver = true;
+        Console.Write("Введи букву: ");
+        char letter = Console.ReadLine()[0];
+
+        if(!UpdateMask(secretWord, ref maskedWord, letter))
+        {
+            Console.WriteLine($"Неправильно! Ошибок: {++errorCounter}");
+        }
+        Console.WriteLine(maskedWord);
+
+        if(maskedWord == secretWord)
+        {
+            Console.WriteLine("Слово угадано!");
+            gameOver = true;
+        }
+
+        if(++attemptCounter == 2 * secretWord.Length)
+        {
+            Console.WriteLine("Больше попыток нет!");
+            gameOver = true;
+        }
     }
 }
-ExitApp();
 
 string ChooseWord(string[] words)
 {
