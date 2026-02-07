@@ -124,7 +124,33 @@ string[] hangmanPictures =
 ========="
 };
 
-string[] words = { "стол", "книга", "окно", "лампа" };
+string[][] words =
+[
+    [
+        "стол", "книга", "окно", "лампа", "стул", "шкаф",
+        "дверь", "ручка", "тетрадь", "чашка", "ложка",
+        "зеркало", "ковер", "подушка", "телефон"
+    ],
+    [
+        "яблоко", "банан", "груша", "апельсин", "виноград",
+        "персик", "слива", "арбуз", "дыня", "клубника",
+        "малина", "черника", "смородина", "киви", "ананас"
+    ],
+    [
+        "кошка", "собака", "птица", "рыба", "хомяк",
+        "кролик", "черепаха", "попугай", "мышь", "лиса",
+        "волк", "медведь", "заяц", "енот", "барсук"
+    ],
+    [
+        "врач", "повар", "учитель", "инженер",
+        "строитель", "водитель", "продавец",
+        "дизайнер", "программист"
+    ],
+    [
+        "код", "класс", "метод", "цикл", "массив",
+        "строка", "объект", "функция", "ошибка"
+    ]
+];
 
 Random rnd = new Random();
 
@@ -142,7 +168,7 @@ void PlayGame()
 {
     string secretWord = ChooseWord(words);
     // временно, для контроля разработки
-    Console.WriteLine($"[DEBUG] Загаданное слово: {secretWord}");
+    //Console.WriteLine($"[DEBUG] Загаданное слово: {secretWord}");
 
     string maskedWord = CreateMask(secretWord);
 
@@ -168,9 +194,11 @@ void PlayGame()
         {
             Console.WriteLine($"Неправильно! Ошибок: {++errorCounter}");
             Console.WriteLine(hangmanPictures[errorCounter]);
+            Console.WriteLine(maskedWord);
             if(errorCounter == hangmanPictures.Length - 1)
             {
                 Console.WriteLine("Больше попыток нет!");
+                Console.WriteLine($"Было загадано слово: {secretWord}");
                 gameOver = true;
             }
         }
@@ -187,10 +215,11 @@ void PlayGame()
     }
 }
 
-string ChooseWord(string[] words)
+string ChooseWord(string[][] words)
 {
-    int index = rnd.Next(words.Length);
-    return words[index];
+    int listIndex = rnd.Next(words.Length);
+    int wordIndex = rnd.Next(words[listIndex].Length);
+    return words[listIndex][wordIndex];
 }
 
 string CreateMask(string word)
