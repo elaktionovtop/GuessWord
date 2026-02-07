@@ -10,6 +10,8 @@
 пока повтор игры
 
 выйти из программы
+
+список картинок 
 ---
 < играть()
     выбираем случайное слово из массива (функция)
@@ -33,7 +35,7 @@
         если маска = слово
             выводим сообщение о победе
             конец игры
-        если счетчик попыток достиг 2 * длина слова
+        если счетчик попыток достиг количества рисунков
             выводим сообщение о поражении
             конец игры
 ---
@@ -56,9 +58,75 @@ bool < обновить маску (слово, ref маска, буква)
 
 WriteTitle("Угадай слово!");
 
-Random rnd = new Random();
+string[] hangmanPictures =
+{
+@"
+ +---+
+ |   |
+     |
+     |
+     |
+     |
+=========",
+
+@"
+ +---+
+ |   |
+ O   |
+     |
+     |
+     |
+=========",
+
+@"
+ +---+
+ |   |
+ O   |
+ |   |
+     |
+     |
+=========",
+
+@"
+ +---+
+ |   |
+ O   |
+/|   |
+     |
+     |
+=========",
+
+@"
+ +---+
+ |   |
+ O   |
+/|\  |
+     |
+     |
+=========",
+
+@"
+ +---+
+ |   |
+ O   |
+/|\  |
+/    |
+     |
+=========",
+
+@"
+ +---+
+ |   |
+ O   |
+/|\  |
+/ \  |
+     |
+========="
+};
 
 string[] words = { "стол", "книга", "окно", "лампа" };
+
+Random rnd = new Random();
 
 bool playAgain;
 do
@@ -77,33 +145,44 @@ void PlayGame()
     Console.WriteLine($"[DEBUG] Загаданное слово: {secretWord}");
 
     string maskedWord = CreateMask(secretWord);
-    Console.WriteLine(maskedWord);
 
     bool gameOver = false;
     int attemptCounter = 0;
     int errorCounter = 0;
 
+    Console.WriteLine(hangmanPictures[errorCounter]);
+    Console.WriteLine(maskedWord);
+
     while(!gameOver)
     {
         Console.Write("Введи букву: ");
-        char letter = Console.ReadLine()[0];
+        string input = Console.ReadLine();
+        if(string.IsNullOrEmpty(input))
+        {
+            Console.WriteLine("Игра прервана.");
+            break;
+        }
+        char letter = input[0];
 
         if(!UpdateMask(secretWord, ref maskedWord, letter))
         {
             Console.WriteLine($"Неправильно! Ошибок: {++errorCounter}");
+            Console.WriteLine(hangmanPictures[errorCounter]);
+            if(errorCounter == hangmanPictures.Length - 1)
+            {
+                Console.WriteLine("Больше попыток нет!");
+                gameOver = true;
+            }
         }
-        Console.WriteLine(maskedWord);
-
-        if(maskedWord == secretWord)
+        else
         {
-            Console.WriteLine("Слово угадано!");
-            gameOver = true;
-        }
+            Console.WriteLine(maskedWord);
 
-        if(++attemptCounter == 2 * secretWord.Length)
-        {
-            Console.WriteLine("Больше попыток нет!");
-            gameOver = true;
+            if(maskedWord == secretWord)
+            {
+                Console.WriteLine("Слово угадано!");
+                gameOver = true;
+            }
         }
     }
 }
